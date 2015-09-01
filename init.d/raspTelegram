@@ -1,0 +1,33 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          raspTelegram
+# Required-Start:    telegram-daemon
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: telegram client custom
+# Description:       telegram client custom
+### END INIT INFO
+
+# actions
+case "$1" in
+    start)
+        echo "Telegram client custom is starting..."
+        /home/pi/.virtualenvs/raspTelegram/bin/python /home/pi/src/raspTelegram/client.py &
+        echo "...done"
+        ;;
+    stop)
+        echo "stopping telegram daemon..."
+        sudo pkill client.py
+        echo "..done"
+        ;;
+    restart)
+        echo "stopping telegram daemon..."
+        sudo pkill client.py
+        echo "..done -- restarting..."
+        /home/pi/.virtualenvs/raspTelegram/bin/python /home/pi/src/raspTelegram/client.py &
+        echo "...done"
+        ;;
+esac
+
+exit 0

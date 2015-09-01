@@ -1,0 +1,34 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          telegram-daemon
+# Required-Start:
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: telegram daemon
+# Description:       telegram daemon
+### END INIT INFO
+
+# actions
+case "$1" in
+    start)
+        echo "Telegram daemon is starting..."
+        su telegramd -c '/usr/share/telegram-daemon/bin/telegram-cli -vvvvRC --json -W -dL /var/log/telegram-daemon/telegram-daemon-achat.log -P 4458 &'
+        echo "...done"
+        ;;
+    stop)
+        echo "stopping telegram daemon..."
+        sudo pkill telegram
+        echo "..done"
+        ;;
+    restart)
+        echo "stopping telegram daemon..."
+        sudo pkill telegram
+        echo "..done -- restarting..."
+        su telegramd -c '/usr/share/telegram-daemon/bin/telegram-cli -vvvvRC  --json -W -dL /var/log/telegram-daemon/telegram-daemon-achat.log -P 4458 &'
+        echo "...done"
+        ;;
+esac
+
+exit 0
+
