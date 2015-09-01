@@ -1,0 +1,5 @@
+git+https://github.com/adafruit/Adafruit_Python_DHT.git@master
+DictObject==0.1.2
+ipdb==0.8
+ipython==3.1.0
+luckydonald-utils==0.13
