@@ -1,6 +1,8 @@
 # raspTelegram
 A simple Telegram Client for Raspberry Pi
 
+<img src="https://dl.dropboxusercontent.com/u/14133267/telegram.raspberry.png" alt="raspTelegram screenshot" width="400">
+
 ## Installation
 
 Install the Telegram CLI (from @vysheng), follow the [official Instructions](https://github.com/vysheng/tg)
