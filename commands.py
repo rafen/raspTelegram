@@ -1,12 +1,21 @@
 import Adafruit_DHT
 import subprocess
 from datetime import datetime
+from RPi import GPIO
 from time import time
 
 from tg_client import TelegramClientCommands
 
 
 class TelegramCommands(TelegramClientCommands):
+    BUTTON = 17
+
+    def __init__(self, *args, **kwargs):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.BUTTON, GPIO.IN)
+        GPIO.add_event_detect(self.BUTTON, GPIO.FALLING,
+                              callback=self.button_photo, bouncetime=200)
+        super(TelegramCommands, self).__init__(*args, **kwargs)
 
     def command__hello(self, msg, *args):
         self.send_reply(msg, u'Hi!')
@@ -36,6 +45,14 @@ class TelegramCommands(TelegramClientCommands):
         # send picture
         self.send_reply_photo(msg, file_name, u'Photo: {}'.format(timestamp))
 
+    def button_photo(self, *args, **kwargs):
+        for user, name in self.to_users.items():
+            self.command__photo({'sender': {'username': user}})
+
     def command__quit(self, msg, *args):
         self.send_reply(msg, u'Closing client. Good bye!')
         return 'quit'
+
+    def stop(self):
+        super(TelegramCommands, self).stop()
+        GPIO.remove_event_detect(self.BUTTON)
