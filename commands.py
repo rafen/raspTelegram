@@ -46,8 +46,15 @@ class TelegramCommands(TelegramClientCommands):
         self.send_reply_photo(msg, file_name, u'Photo: {}'.format(timestamp))
 
     def button_photo(self, *args, **kwargs):
-        for user, name in self.to_users.items():
-            self.command__photo({'sender': {'username': user}})
+        """
+        Send photo to receivers
+        """
+        for name, value in self.receivers.items():
+            # call the photo command using a mockes msg with the name of the receivers
+            self.command__photo({
+                'sender': {'username': name},
+                'receiver': {'name': name}
+            })
 
     def command__quit(self, msg, *args):
         self.send_reply(msg, u'Closing client. Good bye!')
