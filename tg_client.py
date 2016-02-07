@@ -71,6 +71,8 @@ class TelegramClientCommands(TelegramClient):
     CMD_PREFIX = 'command__'
 
     def is_valid(self, msg):
+        if msg[u'event'] != u'message':
+            return False
         is_valid_user = msg.get('sender') and msg['sender'].get('username') in self.from_users
         is_valid_group = not self.groups or (msg.get('receiver') and msg['receiver'].get('name') in self.groups)
         return is_valid_user and is_valid_group
