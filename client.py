@@ -7,12 +7,11 @@ try:
 except Exception:
     # default settings
     config = {
-        'from_users': [u'rafenm'],
+        'users': {
+            u'rafenm': u'Rafael_Capdevielle'
+        },
         'groups': {
             u'Example Chat': u'chat#108633111'
-        },
-        'to_users': {
-            u'rafenm': u'Rafael_Capdevielle'
         }
     }
 
