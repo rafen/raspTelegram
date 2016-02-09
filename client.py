@@ -12,7 +12,8 @@ except Exception:
         },
         'groups': {
             u'Example Chat': u'chat#108633111'
-        }
+        },
+        # 'config': {}  # extra config
     }
 
 if __name__ == '__main__':

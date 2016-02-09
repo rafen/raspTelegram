@@ -1,10 +1,14 @@
 import Adafruit_DHT
+import logging
 import subprocess
+import sys
 from datetime import datetime
 from RPi import GPIO
 from time import time
 
 from tg_client import TelegramClientCommands
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 class TelegramCommands(TelegramClientCommands):
@@ -14,7 +18,7 @@ class TelegramCommands(TelegramClientCommands):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.BUTTON, GPIO.IN)
         GPIO.add_event_detect(self.BUTTON, GPIO.FALLING,
-                              callback=self.button_photo, bouncetime=200)
+                              callback=self.button_alert, bouncetime=800)
         super(TelegramCommands, self).__init__(*args, **kwargs)
 
     def command__hello(self, msg, *args):
@@ -45,7 +49,11 @@ class TelegramCommands(TelegramClientCommands):
         # send picture
         self.send_reply_photo(msg, file_name, u'Photo: {}'.format(timestamp))
 
-    def button_photo(self, *args, **kwargs):
+    def button_alert(self, *args, **kwargs):
+        self.send_alert_message()
+        self.send_alert_photo()
+
+    def send_alert_photo(self, *args, **kwargs):
         """
         Send photo to receivers
         """
@@ -55,6 +63,10 @@ class TelegramCommands(TelegramClientCommands):
                 'sender': {'username': name},
                 'receiver': {'name': name}
             })
+
+    def send_alert_message(self, *args, **kwargs):
+        for name, group_id in self.groups.items():
+            self.send_message(group_id, u'ALERT!')
 
     def command__quit(self, msg, *args):
         self.send_reply(msg, u'Closing client. Good bye!')

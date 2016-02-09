@@ -12,7 +12,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class TelegramClient(object):
 
-    def __init__(self, users=None, groups=None):
+    def __init__(self, users=None, groups=None, config=None):
         """
         List of allowed user to send messages: users
         List of groups to reply and receive messages: groups
@@ -22,6 +22,8 @@ class TelegramClient(object):
         self.receiver = Receiver(port=PORT)
         self.sender = Sender(host=HOST, port=PORT)
         self.receiver.start()
+        # extra config
+        self.config = config or {}
         # start loop
         self.receiver.message(self.main_loop())
 
