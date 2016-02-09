@@ -18,7 +18,7 @@ class TelegramCommands(TelegramClientCommands):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.BUTTON, GPIO.IN)
         GPIO.add_event_detect(self.BUTTON, GPIO.FALLING,
-                              callback=self.button_alert, bouncetime=800)
+                              callback=self.button_alert, bouncetime=200)
         super(TelegramCommands, self).__init__(*args, **kwargs)
 
     def command__hello(self, msg, *args):
