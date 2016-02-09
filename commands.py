@@ -49,7 +49,7 @@ class TelegramCommands(TelegramClientCommands):
         """
         Send photo to receivers
         """
-        for name, value in self.receivers.items():
+        for name, value in self.groups.items():
             # call the photo command using a mockes msg with the name of the receivers
             self.command__photo({
                 'sender': {'username': name},
