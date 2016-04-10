@@ -4,7 +4,7 @@ import subprocess
 import sys
 from datetime import datetime
 from RPi import GPIO
-from time import time
+from time import time, sleep
 
 from tg_client import TelegramClientCommands
 
@@ -13,12 +13,14 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class TelegramCommands(TelegramClientCommands):
     BUTTON = 17
+    GATE = 27
 
     def __init__(self, *args, **kwargs):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.BUTTON, GPIO.IN)
         GPIO.add_event_detect(self.BUTTON, GPIO.FALLING,
                               callback=self.button_alert, bouncetime=200)
+        GPIO.setup(self.GATE, GPIO.OUT)
         super(TelegramCommands, self).__init__(*args, **kwargs)
 
     def command__hello(self, msg, *args):
@@ -48,6 +50,12 @@ class TelegramCommands(TelegramClientCommands):
         ])
         # send picture
         self.send_reply_photo(msg, file_name, u'Photo: {}'.format(timestamp))
+
+    def command__gate(self, msg, *args):
+        GPIO.output(self.GATE, GPIO.HIGH)
+        sleep(0.4)
+        GPIO.output(self.GATE, GPIO.LOW)
+        self.send_reply(msg, u'Signal sent')
 
     def button_alert(self, *args, **kwargs):
         self.send_alert_message()
