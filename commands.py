@@ -13,7 +13,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class TelegramCommands(TelegramClientCommands):
     BUTTON = 17
-    GATE = 27
+    GATE = 5
 
     def __init__(self, *args, **kwargs):
         GPIO.setmode(GPIO.BCM)
@@ -21,6 +21,7 @@ class TelegramCommands(TelegramClientCommands):
         GPIO.add_event_detect(self.BUTTON, GPIO.FALLING,
                               callback=self.button_alert, bouncetime=200)
         GPIO.setup(self.GATE, GPIO.OUT)
+        GPIO.output(self.GATE, GPIO.HIGH)
         super(TelegramCommands, self).__init__(*args, **kwargs)
 
     def command__hello(self, msg, *args):
@@ -52,9 +53,9 @@ class TelegramCommands(TelegramClientCommands):
         self.send_reply_photo(msg, file_name, u'Photo: {}'.format(timestamp))
 
     def command__gate(self, msg, *args):
-        GPIO.output(self.GATE, GPIO.HIGH)
-        sleep(0.4)
         GPIO.output(self.GATE, GPIO.LOW)
+        sleep(0.4)
+        GPIO.output(self.GATE, GPIO.HIGH)
         self.send_reply(msg, u'Signal sent')
 
     def button_alert(self, *args, **kwargs):
