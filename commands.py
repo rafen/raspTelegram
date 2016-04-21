@@ -16,6 +16,7 @@ class TelegramCommands(TelegramClientCommands):
     GATE = 5
 
     def __init__(self, *args, **kwargs):
+        GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.BUTTON, GPIO.IN)
         GPIO.add_event_detect(self.BUTTON, GPIO.FALLING,
