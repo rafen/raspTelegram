@@ -1,5 +1,7 @@
 import logging
 import sys
+from datetime import timedelta
+from dateutil.parser import parse
 from pytg.receiver import Receiver
 from pytg.sender import Sender
 from pytg.utils import coroutine
@@ -68,6 +70,7 @@ class TelegramClient(object):
 class TelegramClientCommands(TelegramClient):
 
     CMD_PREFIX = 'command__'
+    MAX_MESSAGE_AGE = timedelta(seconds=30)
 
     def is_valid(self, msg):
         if msg[u'event'] != u'message':
@@ -75,11 +78,19 @@ class TelegramClientCommands(TelegramClient):
         is_valid_user = msg.get('sender') and msg['sender'].get('username') in self.users
         return is_valid_user
 
+    def is_old(self, msg):
+        sent = parse(msg['sender']['when'])
+        received = parse(msg['receiver']['when'])
+        return sent + self.MAX_MESSAGE_AGE <= received
+
     def read_command(self, msg):
         if self.is_valid(msg) and msg.get('text'):
             logging.debug(u'VALID MSG: "{}"'.format(msg))
             args = msg.get('text').split(' ')
             cmd = self.CMD_PREFIX + args[0].lower()
             if hasattr(self, cmd):
-                return getattr(self, cmd)(*([msg]+args[1:]))
+                if not self.is_old(msg):
+                    return getattr(self, cmd)(*([msg]+args[1:]))
+                else:
+                    return self.send_reply(msg, u'Ignoring old command: {}'.format(args[0].lower()))
         return False
